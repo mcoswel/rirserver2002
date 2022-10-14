@@ -1,7 +1,4 @@
-import classes.Player;
-import classes.RoomList;
-import classes.Rooms;
-import classes.WheelParam;
+import classes.*;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
@@ -16,5 +13,6 @@ public class NetWork {
         kryo.register(Float.class);
         kryo.register(ArrayList.class);
         kryo.register(RoomList.class);
+        kryo.register(RodaCon.class);
     }
 }
