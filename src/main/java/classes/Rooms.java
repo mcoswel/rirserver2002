@@ -1,17 +1,20 @@
 package classes;
 
 import java.util.List;
+
 public class Rooms {
-    private List<RodaCon> rodaConList;
+    private List<Player> playerList;
+    private List<Integer> connections;
+    private List<Question> questions;
     private String roomId;
     private String roomName;
-
-    public List<RodaCon> getRodaConList() {
-        return rodaConList;
+    private boolean playing;
+    public List<Player> getPlayerList() {
+        return playerList;
     }
 
-    public void setRodaConList(List<RodaCon> rodaConList) {
-        this.rodaConList = rodaConList;
+    public void setPlayerList(List<Player> playerList) {
+        this.playerList = playerList;
     }
 
     public String getRoomId() {
@@ -28,5 +31,29 @@ public class Rooms {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
+    }
+
+    public List<Integer> getConnections() {
+        return connections;
+    }
+
+    public void setConnections(List<Integer> connections) {
+        this.connections = connections;
+    }
+
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public void setPlaying(boolean playing) {
+        this.playing = playing;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 }

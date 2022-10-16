@@ -1,0 +1,21 @@
+package classes;
+
+public enum PlayerStates {
+    DEFAULT,
+    STARTGAME,
+    SETPLAYER,
+    ROUNDSTARTED,
+    SPINWHEEL,
+    READYTOSPIN,
+    TOSPIN,
+    GETRESULT,
+    SHOWHEELRESULT,
+    CONTINUETURN,
+    CHANGETURN,
+    CHECKLETTER,
+    FINISHCHECK,
+    SHOWVOCAL,
+    VOCALSHOWED,
+    ROUNDEND,
+    STARTNEWROUND;
+}
