@@ -9,12 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static classes.PlayerStates.*;
-
 public class RirServer {
     Server server;
     HashMap<String, Rooms> roomMap = new HashMap<>();
-    HashMap<Rooms, StatesCount> stateMap = new HashMap<>();
 
     public RirServer() throws IOException {
         server = new Server() {
@@ -39,7 +36,7 @@ public class RirServer {
                 super.disconnected(connection);
                 RodaCon rodaCon = (RodaCon) connection;
                 if (rodaCon.player != null) {
-                    removePlayerFromRoom(rodaCon.player);
+                    removePlayerFromRoom(rodaCon);
                 }
                 checkEmptyRoom();
             }
@@ -57,26 +54,36 @@ public class RirServer {
                     //remove created room if any during registration
                     server.sendToTCP(rodaCon.getID(), getAllRooms());
                     if (roomMap.containsKey(rodaCon.player.getId())) {
-                        roomMap.remove(rodaCon.player.getId());
+                        removePlayer(roomMap.get(rodaCon.player.getId()), rodaCon);
                     }
                 }
 
                 if (rodaCon.player == null) {
                     return;
                 }
+                if (!rodaCon.roomId.equals("")) {
+                    if (!roomMap.containsKey(rodaCon.roomId)) {
+                        rodaCon.roomId = "";
+                    }
+                }
 
                 if (o instanceof Rooms) {
                     Rooms rooms = (Rooms) o;
+                    if (!rodaCon.roomId.equals("")) {
+                        removePlayer(roomMap.get(rodaCon.roomId), rodaCon);
+                    }
                     if (!roomMap.containsKey(rodaCon.player.getId())) {
                         roomMap.put(rooms.getRoomId(), rooms);
                         addPlayer(rooms, rodaCon);
                         server.sendToAllTCP(getAllRooms());
-
                     }
                 }
                 if (o instanceof JoinRoom) {
                     JoinRoom joinRoom = (JoinRoom) o;
                     rodaCon.roomId = joinRoom.getRoomId();
+                    if (roomMap.containsKey(rodaCon.player.getId())) {
+                        roomMap.remove(rodaCon.player.getId());
+                    }
                     if (roomMap.containsKey(joinRoom.getRoomId())) {
                         addPlayer(roomMap.get(joinRoom.getRoomId()), rodaCon);
                         server.sendToAllTCP(getAllRooms());
@@ -84,8 +91,14 @@ public class RirServer {
                 }
 
                 if (!rodaCon.roomId.equals("")) {
-
                     Rooms rooms = roomMap.get(rodaCon.roomId);
+
+                    if (o instanceof ExitRoom) {
+                        removePlayer(rooms, rodaCon);
+                        rodaCon.roomId = "";
+                        server.sendToAllTCP(getAllRooms());
+                    }
+
                     if (o instanceof DeleteRoom) {
                         DeleteRoom deleteRoom = (DeleteRoom) o;
                         roomMap.remove(deleteRoom.getRoomId());
@@ -93,126 +106,57 @@ public class RirServer {
                             rodaCon.roomId = "";
                         }
                         server.sendToAllTCP(getAllRooms());
-
                     }
 
-                    if (o instanceof SetGift) {
+                    if (o instanceof GameState) {
+                        GameState gameState = (GameState) o;
+                        rooms.setGameState(gameState);
+                        rooms.getStateMap().put(rodaCon.player, gameState);
+                        System.out.println(rodaCon.player.getName()+"  "+gameState);
+                        if (checkState(rooms)) {
+                            if (gameState.equals(GameState.SETUPPLAYER)) {
+                                sendToRoomPlayer(rooms, rooms);
+                            }
+                            if (gameState.equals(GameState.STARTNEWROUND)) {
+                                sendToRoomPlayer(rooms, new ExecuteStartNewRound());
+                            }
+                        }
+                    }
+
+                    if (o instanceof RequestSetUpPlayer){
                         sendToRoomPlayer(rooms, o);
                     }
-
-                    if (o instanceof ExitRoom) {
-                        rooms.getPlayerList().remove(rodaCon.player);
-                        rooms.getConnections().remove(rodaCon.getID());
-                        rodaCon.roomId = "";
-                        server.sendToAllTCP(getAllRooms());
-                    }
-
-                    if (o instanceof RequestStartGame) {
-                        StatesCount statesCount = new StatesCount(STARTGAME, rooms.getPlayerList().size());
-                        stateMap.put(rooms, statesCount);
-                        sendToRoomPlayer(rooms, new RequestStartGame());
-                    }
-
-                    if (o instanceof RequestSpin) {
-                        stateMap.get(rooms).setState(SPINWHEEL);
+                    if (o instanceof RequestStartNewRound){
                         sendToRoomPlayer(rooms, o);
                     }
-                    if (o instanceof ApplyImpulse) {
-                        sendToRoomPlayer(rooms, o);
-                    }
-                    if (o instanceof ShowWheelResult) {
-                        stateMap.get(rooms).setState(GETRESULT);
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-                    if (o instanceof CheckLetter) {
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-
-                    if (o instanceof RequestShowVocal) {
-                        stateMap.get(rooms).setState(SHOWVOCAL);
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-                    if (o instanceof RequestChangeTurn) {
-                        stateMap.get(rooms).setState(CHANGETURN);
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-                    if (o instanceof RequestContinueTurn) {
-                        stateMap.get(rooms).setState(CONTINUETURN);
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-                    if (o instanceof RequestBankrupt) {
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-                    if (o instanceof RequestRoundEnd) {
-                        stateMap.get(rooms).setState(ROUNDEND);
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-                    if (o instanceof RequestRemoveFreeTurn){
-                        stateMap.get(rooms).setState(CONTINUETURN);
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-                    if (o instanceof RequestStartNewRound) {
-                        stateMap.get(rooms).setState(STARTNEWROUND);
-                        sendToRoomPlayer(rooms, o);
-                    }
-
-                    if (o instanceof PlayerStates) {
-                        PlayerStates playerStates = (PlayerStates) o;
-                        checkStates(rooms, playerStates);
-                    }
-
                 }
             }
         });
         server.start();
     }
 
-    private void checkStates(Rooms rooms, PlayerStates playerStates) {
-        StatesCount statesCount = stateMap.get(rooms);
-        if (playerStates.equals(statesCount.getPlayerStates())) {
-            if (statesCount.addCount()) {
-                if (statesCount.getPlayerStates().equals(STARTGAME)) {
-                    SetPlayer setPlayer = new SetPlayer();
-                    setPlayer.setPlayerList(rooms.getPlayerList());
-                    sendToRoomPlayer(rooms, setPlayer);
-                    statesCount.setState(SETPLAYER);
-                } else if (statesCount.getPlayerStates().equals(SETPLAYER)) {
-                    statesCount.setState(STARTNEWROUND);
-                    sendToRoomPlayer(rooms, new RequestStartNewRound());
-                } else if (statesCount.getPlayerStates().equals(STARTNEWROUND)) {
-                    sendToRoomPlayer(rooms, new StartNewRound());
-                } else if (statesCount.getPlayerStates().equals(SPINWHEEL)) {
-                    sendToRoomPlayer(rooms, new ShowWheel());
-                    statesCount.setState(READYTOSPIN);
-                } else if (statesCount.getPlayerStates().equals(READYTOSPIN)) {
-                    sendToRoomPlayer(rooms, new ReadyToSpin());
-                } else if (statesCount.getPlayerStates().equals(GETRESULT)) {
-                    sendToRoomPlayer(rooms, new ExecuteWheelResults());
-                } else if (statesCount.getPlayerStates().equals(CONTINUETURN)) {
-                    sendToRoomPlayer(rooms, new ContinueTurn());
-                } else if (statesCount.getPlayerStates().equals(CHANGETURN)) {
-                    sendToRoomPlayer(rooms, new ChangeTurn());
-                } else if (statesCount.getPlayerStates().equals(SHOWVOCAL)) {
-                    sendToRoomPlayer(rooms, new ShowVocal());
-                } else if (statesCount.getPlayerStates().equals(ROUNDEND)) {
-                    sendToRoomPlayer(rooms, new RoundEnd());
-                }
+    private boolean checkState(Rooms rooms) {
+        boolean b = true;
+        for (Player player : rooms.getPlayerList()) {
+            if (!rooms.getStateMap().get(player).equals(rooms.getGameState())) {
+                b = false;
             }
         }
+        System.out.println("check state "+b);
+        return b;
     }
 
     private void addPlayer(Rooms rooms, RodaCon rodaCon) {
         rooms.getConnections().add(rodaCon.getID());
         rooms.getPlayerList().add(rodaCon.player);
         rodaCon.roomId = rooms.getRoomId();
+        rooms.getStateMap().put(rodaCon.player, GameState.DEFAULT);
+    }
+
+    private void removePlayer(Rooms rooms, RodaCon rodaCon) {
+        rooms.getConnections().remove(Integer.valueOf(rodaCon.getID()));
+        rooms.getPlayerList().remove(rodaCon.player);
+        rodaCon.roomId = "";
     }
 
     private void checkEmptyRoom() {
@@ -226,25 +170,23 @@ public class RirServer {
 
         if (!toRemove.isEmpty()) {
             for (String s : toRemove) {
-                stateMap.remove(roomMap.get(s));
                 roomMap.remove(s);
             }
             server.sendToAllTCP(getAllRooms());
         }
     }
 
-    private void removePlayerFromRoom(Player player) {
+    private void removePlayerFromRoom(RodaCon rodaCon) {
         for (Map.Entry<String, Rooms> entry : roomMap.entrySet()) {
             Rooms rooms = entry.getValue();
             Player toRemove = null;
             for (Player p : rooms.getPlayerList()) {
-                if (player.getId().equals(p.getId())) {
+                if (rodaCon.player.getId().equals(p.getId())) {
                     toRemove = p;
                 }
             }
             if (toRemove != null) {
-                rooms.getPlayerList().remove(toRemove);
-                stateMap.get(rooms).setSize(rooms.getPlayerList().size());
+                removePlayer(rooms, rodaCon);
                 break;
             }
         }
@@ -252,13 +194,8 @@ public class RirServer {
 
 
     private void sendToRoomPlayer(Rooms rooms, Object o) {
-        for (Connection connection : server.getConnections()) {
-            RodaCon rodaCon = (RodaCon) connection;
-            if (rodaCon.roomId != null) {
-                if (rodaCon.roomId.equals(rooms.getRoomId())) {
-                    server.sendToTCP(rodaCon.getID(), o);
-                }
-            }
+        for (Integer r: rooms.getConnections()){
+            server.sendToTCP(r,o);
         }
     }
 

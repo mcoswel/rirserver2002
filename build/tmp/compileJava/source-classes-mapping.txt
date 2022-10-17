@@ -1,69 +1,29 @@
-classes/StartNewRound.java
- classes.StartNewRound
-classes/SetPlayer.java
- classes.SetPlayer
+classes/GameState.java
+ classes.GameState
+classes/ExitRoom.java
+ classes.ExitRoom
 classes/Player.java
  classes.Player
 classes/JoinRoom.java
  classes.JoinRoom
-classes/Question.java
- classes.Question
-classes/StatesCount.java
- classes.StatesCount
-classes/RequestBankrupt.java
- classes.RequestBankrupt
-classes/PlayerStates.java
- classes.PlayerStates
-classes/RoundEnd.java
- classes.RoundEnd
-classes/ShowWheelResult.java
- classes.ShowWheelResult
-classes/RoomList.java
- classes.RoomList
-classes/RequestShowVocal.java
- classes.RequestShowVocal
-classes/ChangeTurn.java
- classes.ChangeTurn
-classes/Rooms.java
- classes.Rooms
-classes/RequestStartGame.java
- classes.RequestStartGame
-classes/ShowVocal.java
- classes.ShowVocal
-classes/ReadyToSpin.java
- classes.ReadyToSpin
-classes/CheckLetter.java
- classes.CheckLetter
-classes/ExitRoom.java
- classes.ExitRoom
-classes/RequestSpin.java
- classes.RequestSpin
-classes/RequestRoundEnd.java
- classes.RequestRoundEnd
 classes/RodaCon.java
  classes.RodaCon
-classes/RequestChangeTurn.java
- classes.RequestChangeTurn
-classes/ExecuteWheelResults.java
- classes.ExecuteWheelResults
+classes/Question.java
+ classes.Question
 classes/WheelParam.java
  classes.WheelParam
-classes/SetGift.java
- classes.SetGift
 classes/DeleteRoom.java
  classes.DeleteRoom
+classes/RequestSetUpPlayer.java
+ classes.RequestSetUpPlayer
+classes/RoomList.java
+ classes.RoomList
+classes/Rooms.java
+ classes.Rooms
+classes/ExecuteStartNewRound.java
+ classes.ExecuteStartNewRound
 classes/RequestStartNewRound.java
  classes.RequestStartNewRound
-classes/ShowWheel.java
- classes.ShowWheel
-classes/ApplyImpulse.java
- classes.ApplyImpulse
-classes/ContinueTurn.java
- classes.ContinueTurn
-classes/RequestContinueTurn.java
- classes.RequestContinueTurn
-classes/RequestRemoveFreeTurn.java
- classes.RequestRemoveFreeTurn
 RirServer.java
  RirServer
  RirServer$1

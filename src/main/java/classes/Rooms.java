@@ -1,5 +1,6 @@
 package classes;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Rooms {
@@ -9,6 +10,8 @@ public class Rooms {
     private String roomId;
     private String roomName;
     private boolean playing;
+    private GameState gameState;
+    private final HashMap<Player, GameState> stateMap = new HashMap<>();
     public List<Player> getPlayerList() {
         return playerList;
     }
@@ -55,5 +58,17 @@ public class Rooms {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public HashMap<Player, GameState> getStateMap() {
+        return stateMap;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }
