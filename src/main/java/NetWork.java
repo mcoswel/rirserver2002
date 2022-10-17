@@ -29,7 +29,6 @@ public class NetWork {
         kryo.register(CheckLetter.class);
         kryo.register(ContinueTurn.class);
         kryo.register(ChangeTurn.class);
-        kryo.register(LetterResult.class);
         kryo.register(ShowVocal.class);
         kryo.register(RequestStartGame.class);
         kryo.register(RequestStartNewRound.class);
@@ -39,6 +38,7 @@ public class NetWork {
         kryo.register(RequestRoundEnd.class);
         kryo.register(RoundEnd.class);
         kryo.register(RequestBankrupt.class);
+        kryo.register(RequestContinueTurn.class);
     }
 }
 

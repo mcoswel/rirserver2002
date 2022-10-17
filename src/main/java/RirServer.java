@@ -96,7 +96,7 @@ public class RirServer {
 
                     }
 
-                    if (o instanceof SetGift){
+                    if (o instanceof SetGift) {
                         sendToRoomPlayer(rooms, o);
                     }
 
@@ -113,48 +113,49 @@ public class RirServer {
                         sendToRoomPlayer(rooms, new RequestStartGame());
                     }
 
-                    if (o instanceof RequestSpin){
+                    if (o instanceof RequestSpin) {
                         stateMap.get(rooms).setState(SPINWHEEL);
                         sendToRoomPlayer(rooms, o);
                     }
-                    if (o instanceof ApplyImpulse){
-                        sendToRoomPlayer(rooms,o);
+                    if (o instanceof ApplyImpulse) {
+                        sendToRoomPlayer(rooms, o);
                     }
-                    if (o instanceof ShowWheelResult){
+                    if (o instanceof ShowWheelResult) {
                         stateMap.get(rooms).setState(GETRESULT);
-                        sendToRoomPlayer(rooms,o);
+                        sendToRoomPlayer(rooms, o);
                     }
 
-                    if (o instanceof CheckLetter){
-                        sendToRoomPlayer(rooms,o);
-                    }
-                    if (o instanceof LetterResult){
-                        LetterResult letterResult = (LetterResult) o;
-                        if (letterResult.isCorrect()){
-                            sendToRoomPlayer(rooms, new ContinueTurn());
-                        }else{
-                            sendToRoomPlayer(rooms, new ChangeTurn());
-                        }
+                    if (o instanceof CheckLetter) {
+                        sendToRoomPlayer(rooms, o);
                     }
 
-                    if (o instanceof RequestShowVocal){
+
+                    if (o instanceof RequestShowVocal) {
                         stateMap.get(rooms).setState(SHOWVOCAL);
                         sendToRoomPlayer(rooms, o);
                     }
 
-                    if (o instanceof RequestChangeTurn){
+                    if (o instanceof RequestChangeTurn) {
                         stateMap.get(rooms).setState(CHANGETURN);
                         sendToRoomPlayer(rooms, o);
                     }
 
-                    if (o instanceof RequestBankrupt){
-                        stateMap.get(rooms).setState(CHANGETURN);
+                    if (o instanceof RequestContinueTurn) {
+                        stateMap.get(rooms).setState(CONTINUETURN);
                         sendToRoomPlayer(rooms, o);
-                        sendToRoomPlayer(rooms, new RequestChangeTurn());
                     }
 
-                    if (o instanceof RequestRoundEnd){
+                    if (o instanceof RequestBankrupt) {
+                        sendToRoomPlayer(rooms, o);
+                    }
+
+                    if (o instanceof RequestRoundEnd) {
                         stateMap.get(rooms).setState(ROUNDEND);
+                        sendToRoomPlayer(rooms, o);
+                    }
+
+                    if (o instanceof RequestStartNewRound) {
+                        stateMap.get(rooms).setState(STARTNEWROUND);
                         sendToRoomPlayer(rooms, o);
                     }
 
@@ -186,17 +187,17 @@ public class RirServer {
                 } else if (statesCount.getPlayerStates().equals(SPINWHEEL)) {
                     sendToRoomPlayer(rooms, new ShowWheel());
                     statesCount.setState(READYTOSPIN);
-                }else if (statesCount.getPlayerStates().equals(READYTOSPIN)) {
+                } else if (statesCount.getPlayerStates().equals(READYTOSPIN)) {
                     sendToRoomPlayer(rooms, new ReadyToSpin());
-                }  else if (statesCount.getPlayerStates().equals(GETRESULT)) {
+                } else if (statesCount.getPlayerStates().equals(GETRESULT)) {
                     sendToRoomPlayer(rooms, new ExecuteWheelResults());
                 } else if (statesCount.getPlayerStates().equals(CONTINUETURN)) {
                     sendToRoomPlayer(rooms, new ContinueTurn());
                 } else if (statesCount.getPlayerStates().equals(CHANGETURN)) {
                     sendToRoomPlayer(rooms, new ChangeTurn());
-                }else if (statesCount.getPlayerStates().equals(SHOWVOCAL)) {
+                } else if (statesCount.getPlayerStates().equals(SHOWVOCAL)) {
                     sendToRoomPlayer(rooms, new ShowVocal());
-                }else if (statesCount.getPlayerStates().equals(ROUNDEND)) {
+                } else if (statesCount.getPlayerStates().equals(ROUNDEND)) {
                     sendToRoomPlayer(rooms, new RoundEnd());
                 }
             }
