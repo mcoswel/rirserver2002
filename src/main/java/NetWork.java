@@ -39,6 +39,7 @@ public class NetWork {
         kryo.register(RoundEnd.class);
         kryo.register(RequestBankrupt.class);
         kryo.register(RequestContinueTurn.class);
+        kryo.register(RequestRemoveFreeTurn.class);
     }
 }
 

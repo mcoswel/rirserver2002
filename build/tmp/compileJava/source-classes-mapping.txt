@@ -62,9 +62,11 @@ classes/ContinueTurn.java
  classes.ContinueTurn
 classes/RequestContinueTurn.java
  classes.RequestContinueTurn
-NetWork.java
- NetWork
+classes/RequestRemoveFreeTurn.java
+ classes.RequestRemoveFreeTurn
 RirServer.java
  RirServer
  RirServer$1
  RirServer$2
+NetWork.java
+ NetWork

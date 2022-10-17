@@ -154,6 +154,11 @@ public class RirServer {
                         sendToRoomPlayer(rooms, o);
                     }
 
+                    if (o instanceof RequestRemoveFreeTurn){
+                        stateMap.get(rooms).setState(CONTINUETURN);
+                        sendToRoomPlayer(rooms, o);
+                    }
+
                     if (o instanceof RequestStartNewRound) {
                         stateMap.get(rooms).setState(STARTNEWROUND);
                         sendToRoomPlayer(rooms, o);
