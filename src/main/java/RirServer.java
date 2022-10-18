@@ -20,7 +20,7 @@ public class RirServer {
                 return new RodaCon();
             }
         };
-
+        System.out.println("RIRSERVER MALAYSIA IS RUNNING");
         NetWork.register(server);
         server.bind(3353);
         server.addListener(new Listener() {
@@ -28,17 +28,28 @@ public class RirServer {
             @Override
             public void connected(Connection connection) {
                 super.connected(connection);
-                System.out.println("connection id " + connection.getID());
             }
 
             @Override
             public void disconnected(Connection connection) {
                 super.disconnected(connection);
                 RodaCon rodaCon = (RodaCon) connection;
+                if (rodaCon.roomId != null) {
+                    if (rodaCon.player!=null) {
+                        if (roomMap.containsKey(rodaCon.roomId)) {
+                            DisconnectPlayer disconnectPlayer = new DisconnectPlayer();
+                            disconnectPlayer.setPlayerName(rodaCon.player.getName());
+                            sendToRoomPlayer(roomMap.get(rodaCon.roomId), disconnectPlayer);
+                        }
+                    }
+                }
                 if (rodaCon.player != null) {
                     removePlayerFromRoom(rodaCon);
                 }
                 checkEmptyRoom();
+
+                server.sendToAllTCP(getAllRooms());
+
             }
 
             @Override
@@ -115,6 +126,9 @@ public class RirServer {
 
                         if (checkState(rooms)) {
                             if (gameState.equals(GameState.SETUPPLAYER)) {
+                                System.out.println(rooms.getRoomName());
+                                rooms.setPlaying(true);
+                                server.sendToAllTCP(getAllRooms());
                                 sendToRoomPlayer(rooms, rooms);
                             }
                             if (gameState.equals(GameState.STARTNEWROUND)) {
@@ -129,11 +143,16 @@ public class RirServer {
                             if (gameState.equals(GameState.CHANGETURN)) {
                                 sendToRoomPlayer(rooms, new ExecuteChangeTurn());
                             }
+                            if (gameState.equals(GameState.ROUNDEND)) {
+                                sendToRoomPlayer(rooms, new ExecuteRoundEnd());
+                            }
                         }
                     }
 
-                    if (o instanceof RequestSetUpPlayer || o instanceof RequestStartNewRound|| o instanceof RequestContinueTurn
-                    || o instanceof RequestChangeTurn || o instanceof RequestBankrupt || o instanceof CheckLetter || o instanceof ShowVocal) {
+                    if (o instanceof RequestSetUpPlayer || o instanceof RequestStartNewRound || o instanceof RequestContinueTurn
+                            || o instanceof RequestChangeTurn || o instanceof RequestBankrupt || o instanceof CheckLetter || o instanceof ShowVocal
+                            || o instanceof RequestStartBonusQuestion || o instanceof BonusString || o instanceof WinBonusRound
+                            || o instanceof ChatOnline) {
                         sendToRoomPlayer(rooms, o);
                     }
 
@@ -141,20 +160,28 @@ public class RirServer {
                         rooms.setGameState(GameState.SHOWWHEEL);
                         sendToRoomPlayer(rooms, o);
                     }
-
+                    if (o instanceof RequestRoundEnd) {
+                        rooms.setGameState(GameState.ROUNDEND);
+                        sendToRoomPlayer(rooms, o);
+                    }
 
                     if (o instanceof WheelResult) {
+                        WheelResult wheelResult = (WheelResult) o;
+                        if (wheelResult.getWheelParam().getName().equals("MUFLIS")) {
+                            RequestBankrupt requestBankrupt = new RequestBankrupt();
+                            requestBankrupt.setId(rodaCon.player.getId());
+                            sendToRoomPlayer(rooms, requestBankrupt);
+                        }
+                        ;
                         rooms.setGameState(GameState.STOPSPIN);
                         sendToRoomPlayer(rooms, o);
                     }
 
 
                     if (o instanceof SetGift || o instanceof RemoveTicket || o instanceof RemoveGift || o instanceof RemoveBonus
-                    || o instanceof RemoveFreeTurn || o instanceof ApplyImpulse){
+                            || o instanceof RemoveFreeTurn || o instanceof ApplyImpulse) {
                         sendToRoomExceptConnections(rooms, o, rodaCon.getID());
                     }
-
-
 
 
                 }

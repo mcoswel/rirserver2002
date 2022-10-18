@@ -6,5 +6,6 @@ public enum GameState {
     SHOWWHEEL,
     STOPSPIN,
     CHANGETURN,
+    ROUNDEND,
     STARTNEWROUND;
 }

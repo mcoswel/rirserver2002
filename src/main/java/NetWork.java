@@ -41,6 +41,13 @@ public class NetWork {
         kryo.register(RemoveBonus.class);
         kryo.register(RemoveTicket.class);
         kryo.register(ShowVocal.class);
+        kryo.register(RequestRoundEnd.class);
+        kryo.register(ExecuteRoundEnd.class);
+        kryo.register(BonusString.class);
+        kryo.register(RequestStartBonusQuestion.class);
+        kryo.register(WinBonusRound.class);
+        kryo.register(ChatOnline.class);
+        kryo.register(DisconnectPlayer.class);
     }
 }
 
