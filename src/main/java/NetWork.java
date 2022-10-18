@@ -40,6 +40,7 @@ public class NetWork {
         kryo.register(RemoveGift.class);
         kryo.register(RemoveBonus.class);
         kryo.register(RemoveTicket.class);
+        kryo.register(ShowVocal.class);
     }
 }
 

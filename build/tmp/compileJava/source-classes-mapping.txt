@@ -54,9 +54,11 @@ classes/RemoveTicket.java
  classes.RemoveTicket
 classes/SetGift.java
  classes.SetGift
-NetWork.java
- NetWork
 RirServer.java
  RirServer
  RirServer$1
  RirServer$2
+classes/ShowVocal.java
+ classes.ShowVocal
+NetWork.java
+ NetWork

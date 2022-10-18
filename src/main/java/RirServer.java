@@ -133,7 +133,7 @@ public class RirServer {
                     }
 
                     if (o instanceof RequestSetUpPlayer || o instanceof RequestStartNewRound|| o instanceof RequestContinueTurn
-                    || o instanceof RequestChangeTurn || o instanceof RequestBankrupt || o instanceof CheckLetter) {
+                    || o instanceof RequestChangeTurn || o instanceof RequestBankrupt || o instanceof CheckLetter || o instanceof ShowVocal) {
                         sendToRoomPlayer(rooms, o);
                     }
 
