@@ -112,7 +112,7 @@ public class RirServer {
                         GameState gameState = (GameState) o;
                         rooms.setGameState(gameState);
                         rooms.getStateMap().put(rodaCon.player, gameState);
-                        System.out.println(rodaCon.player.getName()+"  "+gameState);
+
                         if (checkState(rooms)) {
                             if (gameState.equals(GameState.SETUPPLAYER)) {
                                 sendToRoomPlayer(rooms, rooms);
@@ -120,15 +120,43 @@ public class RirServer {
                             if (gameState.equals(GameState.STARTNEWROUND)) {
                                 sendToRoomPlayer(rooms, new ExecuteStartNewRound());
                             }
+                            if (gameState.equals(GameState.SHOWWHEEL)) {
+                                sendToRoomPlayer(rooms, new ExecuteShowWheel());
+                            }
+                            if (gameState.equals(GameState.STOPSPIN)) {
+                                sendToRoomPlayer(rooms, new ExecuteWheelResult());
+                            }
+                            if (gameState.equals(GameState.CHANGETURN)) {
+                                sendToRoomPlayer(rooms, new ExecuteChangeTurn());
+                            }
                         }
                     }
 
-                    if (o instanceof RequestSetUpPlayer){
+                    if (o instanceof RequestSetUpPlayer || o instanceof RequestStartNewRound|| o instanceof RequestContinueTurn
+                    || o instanceof RequestChangeTurn || o instanceof RequestBankrupt || o instanceof CheckLetter) {
                         sendToRoomPlayer(rooms, o);
                     }
-                    if (o instanceof RequestStartNewRound){
+
+                    if (o instanceof RequestShowWheel) {
+                        rooms.setGameState(GameState.SHOWWHEEL);
                         sendToRoomPlayer(rooms, o);
                     }
+
+
+                    if (o instanceof WheelResult) {
+                        rooms.setGameState(GameState.STOPSPIN);
+                        sendToRoomPlayer(rooms, o);
+                    }
+
+
+                    if (o instanceof SetGift || o instanceof RemoveTicket || o instanceof RemoveGift || o instanceof RemoveBonus
+                    || o instanceof RemoveFreeTurn || o instanceof ApplyImpulse){
+                        sendToRoomExceptConnections(rooms, o, rodaCon.getID());
+                    }
+
+
+
+
                 }
             }
         });
@@ -142,7 +170,6 @@ public class RirServer {
                 b = false;
             }
         }
-        System.out.println("check state "+b);
         return b;
     }
 
@@ -194,8 +221,16 @@ public class RirServer {
 
 
     private void sendToRoomPlayer(Rooms rooms, Object o) {
-        for (Integer r: rooms.getConnections()){
-            server.sendToTCP(r,o);
+        for (Integer r : rooms.getConnections()) {
+            server.sendToTCP(r, o);
+        }
+    }
+
+    private void sendToRoomExceptConnections(Rooms rooms, Object o, int exception) {
+        for (Integer r : rooms.getConnections()) {
+            if (r != exception) {
+                server.sendToTCP(r, o);
+            }
         }
     }
 

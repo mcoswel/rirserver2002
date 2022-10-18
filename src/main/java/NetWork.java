@@ -25,6 +25,21 @@ public class NetWork {
         kryo.register(GameState.class);
         kryo.register(RequestStartNewRound.class);
         kryo.register(ExecuteStartNewRound.class);
+        kryo.register(RequestContinueTurn.class);
+        kryo.register(RequestShowWheel.class);
+        kryo.register(ExecuteShowWheel.class);
+        kryo.register(ApplyImpulse.class);
+        kryo.register(WheelResult.class);
+        kryo.register(ExecuteWheelResult.class);
+        kryo.register(RemoveFreeTurn.class);
+        kryo.register(ExecuteChangeTurn.class);
+        kryo.register(RequestChangeTurn.class);
+        kryo.register(RequestBankrupt.class);
+        kryo.register(CheckLetter.class);
+        kryo.register(SetGift.class);
+        kryo.register(RemoveGift.class);
+        kryo.register(RemoveBonus.class);
+        kryo.register(RemoveTicket.class);
     }
 }
 

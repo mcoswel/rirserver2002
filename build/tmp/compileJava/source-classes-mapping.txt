@@ -1,5 +1,3 @@
-classes/GameState.java
- classes.GameState
 classes/ExitRoom.java
  classes.ExitRoom
 classes/Player.java
@@ -12,21 +10,53 @@ classes/Question.java
  classes.Question
 classes/WheelParam.java
  classes.WheelParam
+classes/RequestContinueTurn.java
+ classes.RequestContinueTurn
 classes/DeleteRoom.java
  classes.DeleteRoom
-classes/RequestSetUpPlayer.java
- classes.RequestSetUpPlayer
-classes/RoomList.java
- classes.RoomList
-classes/Rooms.java
- classes.Rooms
-classes/ExecuteStartNewRound.java
- classes.ExecuteStartNewRound
 classes/RequestStartNewRound.java
  classes.RequestStartNewRound
+classes/RequestSetUpPlayer.java
+ classes.RequestSetUpPlayer
+classes/ExecuteWheelResult.java
+ classes.ExecuteWheelResult
+classes/WheelResult.java
+ classes.WheelResult
+classes/ApplyImpulse.java
+ classes.ApplyImpulse
+classes/RoomList.java
+ classes.RoomList
+classes/RequestShowWheel.java
+ classes.RequestShowWheel
+classes/ExecuteShowWheel.java
+ classes.ExecuteShowWheel
+classes/ExecuteStartNewRound.java
+ classes.ExecuteStartNewRound
+classes/ExecuteChangeTurn.java
+ classes.ExecuteChangeTurn
+classes/RemoveFreeTurn.java
+ classes.RemoveFreeTurn
+classes/RequestChangeTurn.java
+ classes.RequestChangeTurn
+classes/Rooms.java
+ classes.Rooms
+classes/RequestBankrupt.java
+ classes.RequestBankrupt
+classes/GameState.java
+ classes.GameState
+classes/CheckLetter.java
+ classes.CheckLetter
+classes/RemoveBonus.java
+ classes.RemoveBonus
+classes/RemoveGift.java
+ classes.RemoveGift
+classes/RemoveTicket.java
+ classes.RemoveTicket
+classes/SetGift.java
+ classes.SetGift
+NetWork.java
+ NetWork
 RirServer.java
  RirServer
  RirServer$1
  RirServer$2
-NetWork.java
- NetWork
