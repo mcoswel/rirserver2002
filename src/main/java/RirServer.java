@@ -20,7 +20,7 @@ public class RirServer {
                 return new RodaCon();
             }
         };
-        System.out.println("RIRSERVER MALAYSIA IS RUNNING");
+        System.out.println("RIRSERVER MALAYSIA IS RUNNING 2.0");
         NetWork.register(server);
         server.bind(3353);
         server.addListener(new Listener() {
@@ -35,7 +35,7 @@ public class RirServer {
                 super.disconnected(connection);
                 RodaCon rodaCon = (RodaCon) connection;
                 if (rodaCon.roomId != null) {
-                    if (rodaCon.player!=null) {
+                    if (rodaCon.player != null) {
                         if (roomMap.containsKey(rodaCon.roomId)) {
                             DisconnectPlayer disconnectPlayer = new DisconnectPlayer();
                             disconnectPlayer.setPlayerName(rodaCon.player.getName());
@@ -201,6 +201,14 @@ public class RirServer {
     }
 
     private void addPlayer(Rooms rooms, RodaCon rodaCon) {
+        if (!rooms.getPlayerList().isEmpty()) {
+            for (Player player : rooms.getPlayerList()) {
+                if (player.getId().equals(rodaCon.player.getId())) {
+                    return;
+                }
+            }
+        }
+
         rooms.getConnections().add(rodaCon.getID());
         rooms.getPlayerList().add(rodaCon.player);
         rodaCon.roomId = rooms.getRoomId();
